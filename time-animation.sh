@@ -100,6 +100,7 @@ ani_direction[1]=1
 
 # The animation glyph
 ani_glyph[0]="▄▄▄▄"
+ani_glyph[0]="████"
 ani_glyph[1]="▀▀▀▀"
 
 # This is "blank" part of the track; but it doesn't
@@ -237,8 +238,8 @@ while [[ $true_true == true ]]; do
     # Move position to top
     printf '\033[;H'
 
-    echo "${ani_track[0]}"
     echo "$spinner_glyph $(date +'%r +%N')"
+    echo "${ani_track[0]}"
     echo -n "${ani_track[1]}"
 
     (( loop_counter[0] += 1 ))
