@@ -111,6 +111,7 @@ declare -a ani_direction[1]=1
 declare -a ani_glyph[0]="████"
 declare -a ani_glyph[1]="▀▀▀▀"
 
+
 # This is "blank" part of the track; but it doesn't
 # have to be blank; could also put a glyph here too;
 declare ani_track_spacer_glyph=" "
@@ -133,6 +134,31 @@ declare spinner_glyph="${spinner_glyph_arr[0]}"
 
 #=============================================================================
 
+function _show_help() {
+cat << EOF
+NAME
+    time-animation
+
+DESCRIPTION
+    Animated CLI Clock
+
+USAGE
+    $ ./time-animation.sh [-r HOUR)] [-m MINUTE] [-h HELP]
+
+EXAMPLE
+    $ ./time-animation.sh
+      # Default
+    $ ./time-animation.sh -r OOOO -m oooo
+      # Customize hour and minute glyphs
+
+FLAGS
+    -r HOUR       Characters to represent hour.
+    -m MINUTE     Characters to represent minute.
+    -h            This help.
+EOF
+
+}
+
 function unhide_cursor() {
     printf '\e[?25h'
     true_true=false
@@ -140,6 +166,32 @@ function unhide_cursor() {
     echo "exiting..."
     # exit
 }
+
+function _check_flags() {
+    local OPTIND                               # Make this a local; is the index of the next argument index, not current;
+
+    while getopts ":hr:m:" OPTIONS; do
+        case "${OPTIONS}" in
+
+          r)
+            ani_glyph[0]="${OPTARG}"
+            ;;
+          m)
+            ani_glyph[1]="${OPTARG}"
+            ;;
+          h)
+            _show_help; exit;
+            ;;
+          # \?)
+          *)                        # If unknown (any other) option:
+            echo "Error: Unknown option."
+            _show_usage; exit;
+            ;;
+        esac
+    done
+}
+
+
 
 # Draw the animation for a particular track
 function do_animation() {
@@ -244,9 +296,13 @@ function check_frequency() {
     fi
 }
 
+_check_flags "$@"
+
+
 # On exit, I think this runs the given function to unhide the cursor:
 # trap unhide_cursor EXIT
 trap unhide_cursor SIGINT
+
 # Hide cursor
 printf '\e[?25l'
 
