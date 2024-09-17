@@ -1,5 +1,9 @@
 #!/bin/bash
 set -u
+  # unset/null variables as error
+set -e
+  # Exit on error
+
 
 #=============================================================================
 #
@@ -64,51 +68,55 @@ set -u
 #
 
 
-true_true=true
-loop_counter[0]=0
-loop_counter[1]=0
+declare true_true=true
+declare -a loop_counter[0]=0
+declare -a loop_counter[1]=0
 
-sec_unit=1
+declare -i sec_unit=1
 
 # How long to sleep between clock microsecond updates
 # Divide sec_unit by sec_divisor to get the sleep period
 # sec_divisor=20
-sec_divisor=30
-sleep_interv=$( echo "scale=4; $sec_unit/$sec_divisor" | bc )
+declare -i sec_divisor=30
+declare sleep_interv; sleep_interv=$( echo "scale=4; $sec_unit/$sec_divisor" | bc )
+# sleep_interv=$( echo "scale=4; $sec_unit/$sec_divisor" | bc )
 
-adj_real_sec=$(( $sec_unit * $sec_divisor ))
+declare -i adj_real_sec=$(( $sec_unit * $sec_divisor ))
 
 # 10/13 sets the animation movement; higher number, faster;
 # ani_freqency[0]=$(( $adj_real_sec / 6 ))
 # ani_freqency[1]=$(( $adj_real_sec / 10 ))
-ani_freqency[0]=9999
-ani_freqency[1]=9999
+declare -i ani_freqency[0]=9999
+declare -i ani_freqency[1]=9999
 
 
 # Animation track length
-ani_length=18
+declare -i ani_length=19
 
-ani_track[0]=''
-ani_track[1]=''
+declare -a ani_track
+declare -a ani_track
+# ani_track[0]=''
+# ani_track[1]=''
 
-ani_length_counter[0]=1
-ani_length_counter[1]=1
+declare -a ani_length_counter[0]=1
+declare -a ani_length_counter[1]=1
 
 # Denote direction of ani_glyph;
-ani_direction[0]=1
-ani_direction[1]=1
+declare -a ani_direction[0]=1
+declare -a ani_direction[1]=1
 
 # The animation glyph
-ani_glyph[0]="▄▄▄▄"
-ani_glyph[0]="████"
-ani_glyph[1]="▀▀▀▀"
+# declare -a ani_glyph[0]="▄▄▄▄"
+
+declare -a ani_glyph[0]="████"
+declare -a ani_glyph[1]="▀▀▀▀"
 
 # This is "blank" part of the track; but it doesn't
 # have to be blank; could also put a glyph here too;
-ani_track_spacer_glyph=" "
+declare ani_track_spacer_glyph=" "
 
 # spinner glyphs to randomly display:
-spinner_glyph_arr=(⡮ ⡯ ⡰ ⡱ ⡲ ⡳ ⡴ ⡵ ⡶ ⡷ ⡸ ⡹ ⡺ ⡻ ⡼ ⡽ ⡾ ⡿ ⢀ \
+declare -a spinner_glyph_arr=(⡮ ⡯ ⡰ ⡱ ⡲ ⡳ ⡴ ⡵ ⡶ ⡷ ⡸ ⡹ ⡺ ⡻ ⡼ ⡽ ⡾ ⡿ ⢀ \
     ⢁ ⢂ ⢃ ⢄ ⢅ ⢆ ⢇ ⢈ ⢉ ⢊ ⢋ ⢌ ⢍ ⢎ ⢏ ⢐ ⢑ ⢒ ⢓ ⢔ ⢕ ⢖ ⢗ ⢘ ⢙ \
     ⢚ ⢛ ⢜ ⢝ ⢞ ⢟ ⢠ ⢡ ⢢ ⢣ ⢤ ⢥ ⢦ ⢧ ⢨ ⢩ ⢪ ⢫ ⢬ ⢭ ⢮ ⢯ ⢰ ⢱ ⢲ \
     ⢳ ⢴ ⢵ ⢶ ⢷ ⢸ ⢹ ⢺ ⢻ ⢼ ⢽ ⢾ ⢿ ⣀ ⣁ ⣂ ⣃ ⣄ ⣅ ⣆ ⣇ ⣈ ⣉ ⣊ ⣋ \
@@ -117,7 +125,7 @@ spinner_glyph_arr=(⡮ ⡯ ⡰ ⡱ ⡲ ⡳ ⡴ ⡵ ⡶ ⡷ ⡸ ⡹ ⡺ ⡻ ⡼ �
     ⣾ ⣿)
 
 # Start off with this glyph
-spinner_glyph="${spinner_glyph_arr[0]}"
+declare spinner_glyph="${spinner_glyph_arr[0]}"
 # echo $spinner_glyph
 # sleep(50000)
 # spinner_glyph=""
@@ -135,6 +143,7 @@ function unhide_cursor() {
 
 # Draw the animation for a particular track
 function do_animation() {
+
     local who_id=$1
     local i=-1  # Not sure why -1 works better than zero; with zero, ani_glyph disappears;
     local ani_spacer_char=""
@@ -147,7 +156,22 @@ function do_animation() {
             ani_spacer_char="$ani_track_spacer_glyph"
         fi
         ani_track[$who_id]="${ani_track[$who_id]}${ani_spacer_char}"
-        (( i += 1 ))
+
+        # seems both error (with set -e) when i=-1 initially; doesn't like -1!
+        # (( i=i+1 ))
+        # (( i += 1 )) || true
+        (( i++ )) || true
+          # using this idiom in order to always return true even when there's error;
+          # when set -e is set, it seems that when i is zero,
+          # there is an error for whatever reasson;
+          # There's other techniques as well;
+
+        # if [[ $i -eq -1 ]]; then
+        #     i=0
+        # else  # put on 1 line
+        #     (( i += 1 ))  # seems this errors (with set -e) when i=-1 initially
+        # fi
+
     done
 }
 
@@ -161,17 +185,20 @@ function set_spinner_glyph() {
 
 function set_hour_minute(){
 
+    # The set -e problem seems to be hanging here:
     local who_id=$1
+    local hr
+    local mn
 
     if [[ $who_id -eq 0 ]]; then
-        local hr=$(( $( echo $(date +'%H') | bc) + 1 ))   # hour in 24hrs; +1 to prevent 0 hr;
+        hr=$(( $( echo $(date +'%H') | bc) + 1 ))   # hour in 24hrs; +1 to prevent 0 hr;
         # local hr=23
-        hr=$(echo "scale=2; $hr/2" | bc ) # scale to 2 decimal places; we want decimals;
+        hr=$(echo "scale=2; $hr/2" | bc )           # scale to 2 decimal places; we want decimals;
         ani_freqency[0]=$(echo "$adj_real_sec/$hr" | bc ) # No scaling; want integer only;
     else
-        local mn=$(( $(echo $(date +'%M') | bc) + 1 ))   # minutes 00-59; +1 to prevent 0min
+        mn=$(( $(echo $(date +'%M') | bc) + 1 ))    # minutes 00-59; +1 to prevent 0min
         # local mn=30
-        mn=$(echo "scale=2; $mn/2" | bc )   # scale to 2 decimal places; we want decimals;
+        mn=$(echo "scale=2; $mn/2" | bc )           # scale to 2 decimal places; we want decimals;
         ani_freqency[1]=$(echo "$adj_real_sec/$mn" | bc ) # No scaling; want integer only;
     fi
 
@@ -201,11 +228,13 @@ function check_frequency() {
             fi
         fi
 
+        # set +e
         if [[ ${ani_direction[$who_id]} -eq 1 ]]; then
-            (( ani_length_counter[$who_id] += 1 ))
+            (( ani_length_counter[$who_id] += 1 )) || true
         else
-            (( ani_length_counter[$who_id] -= 1 ))
+            (( ani_length_counter[$who_id] -= 1 )) || true
         fi
+        # set -e
 
         do_animation $who_id
         # change spinner glyph; so obviously, whenever one of the
@@ -244,6 +273,13 @@ while [[ $true_true == true ]]; do
 
     (( loop_counter[0] += 1 ))
     (( loop_counter[1] += 1 ))
+
+    # if [[ $i -eq -1 ]]; then
+
+    # set +e
+    # (( loop_counter[0]=${loop_counter[0]}+1 ))
+    # (( loop_counter[1]=${loop_counter[1]}+1 ))
+    # set -e
 
     check_frequency 0
     check_frequency 1
