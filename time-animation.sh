@@ -135,7 +135,7 @@ declare spinner_glyph="${spinner_glyph_arr[0]}"
 
 #=============================================================================
 
-function _show_help() {
+function show_help() {
 cat << EOF
 NAME
     time-animation
@@ -160,7 +160,7 @@ EOF
 
 }
 
-function _unhide_cursor() {
+function unhide_cursor() {
     printf '\e[?25h'
     true_true=false
     echo "";
@@ -170,21 +170,17 @@ function _unhide_cursor() {
 
 # On exit, I think this runs the given function to unhide the cursor:
 # trap unhide_cursor EXIT
-function _set_unhide_on_exit() {
-    trap _unhide_cursor SIGINT
+function set_unhide_on_exit() {
+    trap unhide_cursor SIGINT
 }
 
-function hello(){
-    echo hello
-    exit
-}
 
 # Hide cursor
-function _hide_cursor() {
+function hide_cursor() {
     printf '\e[?25l'
 }
 
-function _check_flags() {
+function check_flags() {
     local OPTIND                               # Make this a local; is the index of the next argument index, not current;
 
     while getopts ":hr:m:" OPTIONS; do
@@ -197,12 +193,12 @@ function _check_flags() {
             anim_glyph[1]="${OPTARG}"
             ;;
           h)
-            _show_help; exit;
+            show_help; exit;
             ;;
           # \?)
           *)                        # If unknown (any other) option:
-            echo "Oops: Unknown option."
-            _show_help; exit;
+            echo "Oops. Unknown option."
+            show_help; exit;
             ;;
         esac
     done
@@ -210,7 +206,7 @@ function _check_flags() {
 
 
 # Draw the animation for a particular track
-function _do_animation() {
+function do_animation() {
 
     local who_id=$1
       # 0 or 1 is passed in
@@ -245,14 +241,14 @@ function _do_animation() {
 }
 
 # Randomly select a glyph from glyph array
-function _set_spinner_glyph() {
+function set_spinner_glyph() {
     local rand_spinner_index=0
     rand_spinner_index=$(( $RANDOM % ${#spinner_glyph_arr[@]} ))
     spinner_glyph=${spinner_glyph_arr[$rand_spinner_index]}
 }
 
 # Set hour/min and respective animation frequency
-function _set_hour_minute(){
+function set_hour_minute(){
 
     local who_id=$1
     local hr
@@ -282,10 +278,10 @@ function _set_hour_minute(){
 
 
 # Check if the track is supposed to animate
-function _check_frequency() {
+function check_frequency() {
 
     local who_id=$1
-    _set_hour_minute $who_id
+    set_hour_minute $who_id
 
     if [[ ${loop_counter[$who_id]} -gt ${anim_freqency[$who_id]} ]]; then
 
@@ -307,24 +303,24 @@ function _check_frequency() {
         fi
         # set -e
 
-        _do_animation $who_id
+        do_animation $who_id
         # change spinner glyph; so obviously, whenever one of the
         # tracks moves, the spinner changes as well;
-        _set_spinner_glyph
+        set_spinner_glyph
         loop_counter[$who_id]=0
     fi
 }
 
 # Initial draw our animation in case the draw frequncy is very low
 # and nothing draws for a while
-function _do_init_setup() {
+function do_init_setup() {
     clear                 # Clear initial screen
-    _do_animation 0
-    _do_animation 1
-    _set_spinner_glyph
+    do_animation 0
+    do_animation 1
+    set_spinner_glyph
 }
 
-function _run_animation() {
+function run_animation() {
     # Changed from just true to using a variable == true because it seems
     # that when calling outside the file folder, the program won't exit on ctrl-c;
     # So on ctrl-c interrupt, I set $true_true=false, and that stops the program;
@@ -348,17 +344,17 @@ function _run_animation() {
         # (( loop_counter[1]=${loop_counter[1]}+1 ))
         # set -e
 
-        _check_frequency 0
-        _check_frequency 1
+        check_frequency 0
+        check_frequency 1
 
         sleep $sleep_interv
 
     done
 }
 
-_check_flags "$@"
-_set_unhide_on_exit
-_hide_cursor
-_do_init_setup
-_run_animation
+check_flags "$@"
+set_unhide_on_exit
+hide_cursor
+do_init_setup
+run_animation
 
