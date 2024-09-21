@@ -14,11 +14,11 @@ $ ./time-animation.sh
   ████
           ▀▀▀▀
 
-$ ./time-animation.sh -r '|__|' -m '|--|'     
+$ ./time-animation.sh -o [--] -m [__]     
 
 ⣍ 10:41:12 PM +899305553
-              |__|
-     |--|      
+              [--]
+     [__]     
 ```          
      
      
@@ -32,17 +32,17 @@ DESCRIPTION
     Animated CLI Clock
 
 USAGE
-    $ ./time-animation.sh [-r HOUR)] [-m MINUTE] [-h HELP]
+    $ ./time-animation.sh [-o HOUR)] [-m MINUTE] [-h HELP]
 
 EXAMPLE
     $ ./time-animation.sh
       # Default
-    $ ./time-animation.sh -r '|__|' -m '|--|'
+    $ ./time-animation.sh -o [--] -m [__]
       # Customize hour and minute glyphs
 
 FLAGS
-    -r HOUR       Characters to represent hour.
-    -m MINUTE     Characters to represent minute.
+    -o HOUR       Characters to represent hour. 23 chars max.
+    -m MINUTE     Characters to represent minute. 23 chars max.
     -h            This help.
 
 ```          

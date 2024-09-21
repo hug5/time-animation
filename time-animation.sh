@@ -92,9 +92,13 @@ declare adj_real_sec=$(( $sec_unit * $sec_divisor ))  # 30
 declare anim_freqency[0]=9999
 declare anim_freqency[1]=9999
 
-
+# track length
+declare -i track_length=24
 # Animation track length
-declare -i anim_length=19
+# declare -i anim_length=20
+declare -a anim_length
+  # This will be calculated based on:
+  # anim_length=$track_length - glyph_length
 
 # declare -a anim_track
 declare -a anim_track[0]=''
@@ -143,23 +147,31 @@ NAME
 
 DESCRIPTION
     Animated CLI Clock
+EOF
+
+show_usage
+}
+
+function show_usage() {
+cat << EOF
 
 USAGE
-    $ ./time-animation.sh [-r HOUR)] [-m MINUTE] [-h HELP]
+    $ ./time-animation.sh [-o HOUR)] [-m MINUTE] [-h HELP]
 
 EXAMPLE
     $ ./time-animation.sh
       # Default
-    $ ./time-animation.sh -r OOOO -m oooo
+    $ ./time-animation.sh -o [--] -m [__]
       # Customize hour and minute glyphs
 
 FLAGS
-    -r HOUR       Characters to represent hour.
-    -m MINUTE     Characters to represent minute.
+    -o HOUR       Characters to represent hour. 23 chars max.
+    -m MINUTE     Characters to represent minute. 23 chars max.
     -h            This help.
 EOF
 
 }
+
 
 function unhide_cursor() {
     printf '\e[?25h'
@@ -184,10 +196,10 @@ function hide_cursor() {
 function check_flags() {
     local OPTIND                               # Make this a local; is the index of the next argument index, not current;
 
-    while getopts ":hr:m:" OPTIONS; do
+    while getopts ":ho:m:" OPTIONS; do
         case "${OPTIONS}" in
 
-          r)
+          o)
             anim_glyph[0]="${OPTARG}"
             ;;
           m)
@@ -199,26 +211,46 @@ function check_flags() {
           # \?)
           *)                        # If unknown (any other) option:
             echo "Oops. Unknown option."
-            show_help; exit;
+            show_usage; exit;
             ;;
         esac
     done
 }
 
+function calc_anim_length() {
+
+    local who_id=$1
+
+    local glyph_length[$who_id]
+
+    # get the length of anim_glyph string
+    glyph_length[$who_id]=${#anim_glyph[$who_id]}
+
+    if [[ ${glyph_length[$who_id]} -ge $track_length ]]; then
+        echo "Oops. Glyth has too many characters."
+        show_usage; exit
+    fi
+
+    # Calculate anim_length:
+    # anim_length=$track_length - glyph_length
+    # track_length=24
+    anim_length[$who_id]=$(( ${track_length}-${glyph_length[$who_id]} ))
+
+}
 
 # Draw the animation for a particular track
 function do_animation() {
 
     local who_id=$1
       # 0 or 1 is passed in
-    local i=-1
+    local i=0
       # Not sure why -1 works better than zero; with zero, anim_glyph disappears;
     local anim_spacer_char=""
     anim_track[$who_id]=""
 
     # Not sure what's exactly happening here!
 
-    while [[ $i -le $anim_length ]]; do  # -le: less than or equal
+    while [[ $i -le ${anim_length[$who_id]} ]]; do  # -le: less than or equal
         if [[ $i -eq ${anim_length_counter[$who_id]} ]]; then  # -eq: equal
             anim_spacer_char="${anim_glyph[$who_id]}"
               # The glyph characters
@@ -292,9 +324,10 @@ function check_frequency() {
 
     if [[ ${loop_counter[$who_id]} -gt ${anim_freqency[$who_id]} ]]; then
 
-        if [[ ${anim_length_counter[$who_id]} -ge $anim_length \
-        || ${anim_length_counter[$who_id]} -le -1 ]]; then
-        # Why does -le -1 work better than -eq 0 ??? Have to figure this out...
+        if [[ ${anim_length_counter[$who_id]} -ge ${anim_length[$who_id]} \
+        || ${anim_length_counter[$who_id]} -le 0 ]]; then
+            # Why does -le -1 work better than -eq 0 ??? Have to figure this out...
+            # why is the counter even going below 0??
 
             if [[ ${anim_direction[$who_id]} -eq 0 ]]; then
                 anim_direction[$who_id]=1
@@ -321,6 +354,8 @@ function check_frequency() {
 # and nothing draws for a while
 function do_init_setup() {
     clear                 # Clear initial screen
+    calc_anim_length 0
+    calc_anim_length 1
     do_animation 0
     do_animation 1
     set_spinner_glyph
