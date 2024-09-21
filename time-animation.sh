@@ -216,6 +216,8 @@ function do_animation() {
     local anim_spacer_char=""
     anim_track[$who_id]=""
 
+    # Not sure what's exactly happening here!
+
     while [[ $i -le $anim_length ]]; do  # -le: less than or equal
         if [[ $i -eq ${anim_length_counter[$who_id]} ]]; then  # -eq: equal
             anim_spacer_char="${anim_glyph[$who_id]}"
@@ -225,6 +227,7 @@ function do_animation() {
               # non-glyph spacer; typically space, " "
         fi
         anim_track[$who_id]="${anim_track[$who_id]}${anim_spacer_char}"
+          # appending to teh anim_track[] variable in the loop
 
         # seems both error (with set -e) when i=-1 initially; doesn't like -1!
         # (( i=i+1 ))
@@ -289,8 +292,9 @@ function check_frequency() {
 
     if [[ ${loop_counter[$who_id]} -gt ${anim_freqency[$who_id]} ]]; then
 
-        if [[ ${anim_length_counter[$who_id]} -ge $anim_length || \
-                   ${anim_length_counter[$who_id]} -le 0 ]]; then
+        if [[ ${anim_length_counter[$who_id]} -ge $anim_length \
+        || ${anim_length_counter[$who_id]} -le -1 ]]; then
+        # Why does -le -1 work better than -eq 0 ??? Have to figure this out...
 
             if [[ ${anim_direction[$who_id]} -eq 0 ]]; then
                 anim_direction[$who_id]=1
@@ -300,7 +304,6 @@ function check_frequency() {
         fi
 
         if [[ ${anim_direction[$who_id]} -eq 1 ]]; then
-        # if [[ ${anim_direction[$who_id]} -le -1 ]]; then
             (( anim_length_counter[$who_id] += 1 )) || true
         else
             (( anim_length_counter[$who_id] -= 1 )) || true
