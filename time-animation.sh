@@ -70,7 +70,7 @@ set -e
 
 
 
-declare true_true=true
+declare is_true=true
 declare -a loop_counter[0]=0
 declare -a loop_counter[1]=0
 
@@ -78,6 +78,7 @@ declare -i sec_unit=1
 
 # How long to sleep between clock microsecond updates
 # Divide sec_unit by sec_divisor to get the sleep period
+# affects animation velocity;
 # sec_divisor=20
 declare -i sec_divisor=30
 declare sleep_interv  # float
@@ -162,7 +163,7 @@ EOF
 
 function unhide_cursor() {
     printf '\e[?25h'
-    true_true=false
+    is_true=false
     echo "";
     echo "exiting..."
     # exit
@@ -210,15 +211,18 @@ function do_animation() {
 
     local who_id=$1
       # 0 or 1 is passed in
-    local i=-1  # Not sure why -1 works better than zero; with zero, anim_glyph disappears;
+    local i=-1
+      # Not sure why -1 works better than zero; with zero, anim_glyph disappears;
     local anim_spacer_char=""
     anim_track[$who_id]=""
 
     while [[ $i -le $anim_length ]]; do  # -le: less than or equal
         if [[ $i -eq ${anim_length_counter[$who_id]} ]]; then  # -eq: equal
             anim_spacer_char="${anim_glyph[$who_id]}"
+              # The glyph characters
         else
             anim_spacer_char="$anim_track_spacer_glyph"
+              # non-glyph spacer; typically space, " "
         fi
         anim_track[$who_id]="${anim_track[$who_id]}${anim_spacer_char}"
 
@@ -295,13 +299,12 @@ function check_frequency() {
             fi
         fi
 
-        # set +e
         if [[ ${anim_direction[$who_id]} -eq 1 ]]; then
+        # if [[ ${anim_direction[$who_id]} -le -1 ]]; then
             (( anim_length_counter[$who_id] += 1 )) || true
         else
             (( anim_length_counter[$who_id] -= 1 )) || true
         fi
-        # set -e
 
         do_animation $who_id
         # change spinner glyph; so obviously, whenever one of the
@@ -323,8 +326,8 @@ function do_init_setup() {
 function run_animation() {
     # Changed from just true to using a variable == true because it seems
     # that when calling outside the file folder, the program won't exit on ctrl-c;
-    # So on ctrl-c interrupt, I set $true_true=false, and that stops the program;
-    while [[ $true_true == true ]]; do
+    # So on ctrl-c interrupt, I set $is_true=false, and that stops the program;
+    while [[ $is_true == true ]]; do
 
         # Move output position to top; rather than successive rows;
         printf '\033[;H'
