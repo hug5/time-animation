@@ -14,11 +14,11 @@ $ ./time-animation.sh
   ████
           ▀▀▀▀
 
-$ ./time-animation.sh -o [--] -m [__]     
+$ ./time-animation.sh -o '[--]' -m '<o0o>'     
 
 ⣍ 10:41:12 PM +899305553
               [--]
-     [__]     
+     <o0o>     
 ```          
      
      
@@ -37,12 +37,12 @@ USAGE
 EXAMPLE
     $ ./time-animation.sh
       # Default
-    $ ./time-animation.sh -o [--] -m [__]
+    $ ./time-animation.sh -o '[--]' -m '<o0o>'
       # Customize hour and minute glyphs
 
 FLAGS
-    -o HOUR       Characters to represent hour. 23 chars max.
-    -m MINUTE     Characters to represent minute. 23 chars max.
+    -o HOUR       Characters to represent hour.
+    -m MINUTE     Characters to represent minute. 
     -h            This help.
 
 ```          
