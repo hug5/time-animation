@@ -156,18 +156,21 @@ function show_usage() {
 cat << EOF
 
 USAGE
-    $ ./time-animation.sh [-o HOUR)] [-m MINUTE] [-h HELP]
+    $ ./time-animation.sh [-g 1-5] [-o HOUR)] [-m MINUTE] [-h HELP]
 
 EXAMPLE
     $ ./time-animation.sh
       # Default
     $ ./time-animation.sh -o '[--]' -m '<o0o>'
       # Customize hour and minute glyphs
+    $ ./time-animation.sh -g1
+      # Use one of the pre-built optional glyphs; 1-5;
 
 FLAGS
-    -o HOUR       Characters to represent hour.
-    -m MINUTE     Characters to represent minute.
-    -h            This help.
+    -o HOUR glyph      Characters to represent hour.
+    -m MINUTE glyph    Characters to represent minute.
+    -g Pre-built       1-5; Use one of the prebuilt glyphs.
+    -h                 This help.
 EOF
 
 }
@@ -194,9 +197,10 @@ function hide_cursor() {
 }
 
 function check_flags() {
-    local OPTIND                               # Make this a local; is the index of the next argument index, not current;
+    local OPTIND    # Make this a local; is the index of the next argument index, not current;
+    local GLYPH
 
-    while getopts ":ho:m:" OPTIONS; do
+    while getopts ":ho:m:g:" OPTIONS; do
         case "${OPTIONS}" in
 
           o)
@@ -209,6 +213,36 @@ function check_flags() {
             show_help; exit;
             ;;
           # \?)
+          g)
+            GLYPH="${OPTARG}"
+            if [[ $GLYPH -eq 1 ]]; then
+                anim_glyph[0]="[--]"
+                anim_glyph[1]="<o=o>"
+
+            elif [[ $GLYPH -eq 2 ]]; then
+                anim_glyph[0]="[=]"
+                anim_glyph[1]="|o|"
+
+            elif [[ $GLYPH -eq 3 ]]; then
+                anim_glyph[0]=".o=o."
+                anim_glyph[1]=".:o:."
+            elif [[ $GLYPH -eq 4 ]]; then
+                anim_glyph[0]='👾'
+                anim_glyph[1]='👹'
+            elif [[ $GLYPH -eq 5 ]]; then
+                anim_glyph[0]='🚂'
+                anim_glyph[1]='🚒'
+            fi
+            ;;
+          2)
+
+            ;;
+          3)
+
+            ;;
+          4)
+
+            ;;
           *)                        # If unknown (any other) option:
             echo "Oops. Unknown option."
             show_usage; exit;
@@ -217,6 +251,7 @@ function check_flags() {
     done
 
 }
+
 
 function calc_anim_length() {
 
