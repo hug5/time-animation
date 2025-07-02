@@ -116,8 +116,8 @@ declare -a anim_direction[1]=1
 # declare -a anim_glyph[0]="████"
 # declare -a anim_glyph[1]="▀▀▀▀"
 
-declare -a anim_glyph[0]="▒▓▓▒"
-declare -a anim_glyph[1]="░▒▒░"
+declare -a anim_glyph[0]="▦▦"
+declare -a anim_glyph[1]="▤▤"
 
 # This is "blank" part of the track; but it doesn't
 # have to be blank; could also put a glyph here too;
@@ -229,8 +229,8 @@ function check_flags() {
                 anim_glyph[1]=".:o:."
 
             elif [[ $GLYPH -eq 4 ]]; then
-                anim_glyph[0]="▪▪▪▪"
-                anim_glyph[1]="▫▫▫▫"
+                anim_glyph[0]="▪-▪"
+                anim_glyph[1]="▫-▫"
 
             elif [[ $GLYPH -eq 5 ]]; then
                 anim_glyph[0]='👾'
@@ -243,6 +243,11 @@ function check_flags() {
             elif [[ $GLYPH -eq 7 ]]; then
                 anim_glyph[0]='████'
                 anim_glyph[1]='▀▀▀▀'
+
+            elif [[ $GLYPH -eq 8 ]]; then
+                anim_glyph[0]="●"
+                anim_glyph[1]="○"
+
             fi
 
             # If none of above, then use default;
