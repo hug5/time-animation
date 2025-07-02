@@ -1,8 +1,7 @@
 #!/bin/bash
-set -u
-  # unset/null variables as error
-set -e
-  # Exit on error
+set -ue
+  # -u unset/null variables as error
+  # -e : Exit on error
 
 
 #=============================================================================
@@ -114,9 +113,11 @@ declare -a anim_direction[1]=1
 # The animation glyph
 # declare -a anim_glyph[0]="▄▄▄▄"
 
-declare -a anim_glyph[0]="████"
-declare -a anim_glyph[1]="▀▀▀▀"
+# declare -a anim_glyph[0]="████"
+# declare -a anim_glyph[1]="▀▀▀▀"
 
+declare -a anim_glyph[0]="▒▓▓▒"
+declare -a anim_glyph[1]="░▒▒░"
 
 # This is "blank" part of the track; but it doesn't
 # have to be blank; could also put a glyph here too;
@@ -164,12 +165,12 @@ EXAMPLE
     $ ./time-animation.sh -o '[--]' -m '<o0o>'
       # Customize hour and minute glyphs
     $ ./time-animation.sh -g1
-      # Use one of the pre-built optional glyphs; 1-5;
+      # Use one of the pre-built optional glyphs; 1-N;
 
 FLAGS
     -o HOUR glyph      Characters to represent hour.
     -m MINUTE glyph    Characters to represent minute.
-    -g Pre-built       1-5; Use one of the prebuilt glyphs.
+    -g Pre-built       1-N; Use one of the prebuilt glyphs.
     -h                 This help.
 EOF
 
@@ -226,21 +227,25 @@ function check_flags() {
             elif [[ $GLYPH -eq 3 ]]; then
                 anim_glyph[0]=".o=o."
                 anim_glyph[1]=".:o:."
+
             elif [[ $GLYPH -eq 4 ]]; then
+                anim_glyph[0]="▪▪▪▪"
+                anim_glyph[1]="▫▫▫▫"
+
+            elif [[ $GLYPH -eq 5 ]]; then
                 anim_glyph[0]='👾'
                 anim_glyph[1]='👹'
-            elif [[ $GLYPH -eq 5 ]]; then
+
+            elif [[ $GLYPH -eq 6 ]]; then
                 anim_glyph[0]='🚂'
                 anim_glyph[1]='🚒'
+
+            elif [[ $GLYPH -eq 7 ]]; then
+                anim_glyph[0]='████'
+                anim_glyph[1]='▀▀▀▀'
             fi
-            ;;
-          2)
 
-            ;;
-          3)
-
-            ;;
-          4)
+            # If none of above, then use default;
 
             ;;
           *)                        # If unknown (any other) option:
