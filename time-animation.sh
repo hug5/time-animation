@@ -115,9 +115,55 @@ declare -a anim_direction[1]=1
 
 # declare -a anim_glyph[0]="████"
 # declare -a anim_glyph[1]="▀▀▀▀"
+# declare -a anim_glyph[0]="▦▦"
+# declare -a anim_glyph[1]="▤▤"
+declare -a anim_glyph[0]=""
+declare -a anim_glyph[1]=""
 
-declare -a anim_glyph[0]="▦▦"
-declare -a anim_glyph[1]="▤▤"
+declare -a anim_glyph_arr[0]=(
+)
+declare -a anim_glyph_arr[1]=(
+)
+
+if [[ $GLYPH -eq 0 ]]; then
+    anim_glyph[0]="▦▦"
+    anim_glyph[1]="▤▤"
+
+elif [[ $GLYPH -eq 1 ]]; then
+    anim_glyph[0]="[--]"
+    anim_glyph[1]="<o=o>"
+
+elif [[ $GLYPH -eq 2 ]]; then
+    anim_glyph[0]="[=]"
+    anim_glyph[1]="|o|"
+
+elif [[ $GLYPH -eq 3 ]]; then
+    anim_glyph[0]=".o=o."
+    anim_glyph[1]=".:o:."
+
+elif [[ $GLYPH -eq 4 ]]; then
+    anim_glyph[0]="▪-▪"
+    anim_glyph[1]="▫-▫"
+
+elif [[ $GLYPH -eq 5 ]]; then
+    anim_glyph[0]='👾'
+    anim_glyph[1]='👹'
+
+elif [[ $GLYPH -eq 6 ]]; then
+    anim_glyph[0]='🚂'
+    anim_glyph[1]='🚒'
+
+elif [[ $GLYPH -eq 7 ]]; then
+    anim_glyph[0]='████'
+    anim_glyph[1]='▀▀▀▀'
+
+elif [[ $GLYPH -eq 8 ]]; then
+    anim_glyph[0]="●"
+    anim_glyph[1]="○"
+
+fi
+
+
 
 # This is "blank" part of the track; but it doesn't
 # have to be blank; could also put a glyph here too;
@@ -216,7 +262,11 @@ function check_flags() {
           # \?)
           g)
             GLYPH="${OPTARG}"
-            if [[ $GLYPH -eq 1 ]]; then
+            if [[ $GLYPH -eq 0 ]]; then
+                anim_glyph[0]="▦▦"
+                anim_glyph[1]="▤▤"
+
+            elif [[ $GLYPH -eq 1 ]]; then
                 anim_glyph[0]="[--]"
                 anim_glyph[1]="<o=o>"
 
@@ -259,6 +309,27 @@ function check_flags() {
             ;;
         esac
     done
+
+
+    if [[ "${anim_glyph[0]}" == "" ]]; then
+
+        local GLYPH_RAND=0
+        local N=9
+        (( N-- ))
+
+        # Random from 0 to N -1
+        GLYPH_RAND=$(( $RANDOM % N ))
+        echo $GLYPH_RAND
+        # exit
+
+        # @ = $GLYPH_RAND
+
+        set -- -g${GLYPH_RAND}
+
+        check_flags "$@"
+        # check_flags "$GLYPH_RAND"
+    fi
+
 
 }
 
@@ -440,6 +511,8 @@ function run_animation() {
 }
 
 check_flags "$@"
+
+
 set_unhide_on_exit
 hide_cursor
 do_init_setup
