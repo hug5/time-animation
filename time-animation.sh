@@ -120,49 +120,29 @@ declare -a anim_direction[1]=1
 declare -a anim_glyph[0]=""
 declare -a anim_glyph[1]=""
 
-declare -a anim_glyph_arr[0]=(
+declare -a anim_glyph_arr_0=(
+    "▦▦"
+    "[--]"
+    "[=]"
+    ".o=o."
+    "▪-▪"
+    "👾"
+    "🚂"
+    "████"
+    "●"
 )
-declare -a anim_glyph_arr[1]=(
+
+declare -a anim_glyph_arr_1=(
+    "▤▤"
+    "<o=o>"
+    "|o|"
+    ".:o:."
+    "▫-▫"
+    "👹"
+    "🚒"
+    "▀▀▀▀"
+    "○"
 )
-
-if [[ $GLYPH -eq 0 ]]; then
-    anim_glyph[0]="▦▦"
-    anim_glyph[1]="▤▤"
-
-elif [[ $GLYPH -eq 1 ]]; then
-    anim_glyph[0]="[--]"
-    anim_glyph[1]="<o=o>"
-
-elif [[ $GLYPH -eq 2 ]]; then
-    anim_glyph[0]="[=]"
-    anim_glyph[1]="|o|"
-
-elif [[ $GLYPH -eq 3 ]]; then
-    anim_glyph[0]=".o=o."
-    anim_glyph[1]=".:o:."
-
-elif [[ $GLYPH -eq 4 ]]; then
-    anim_glyph[0]="▪-▪"
-    anim_glyph[1]="▫-▫"
-
-elif [[ $GLYPH -eq 5 ]]; then
-    anim_glyph[0]='👾'
-    anim_glyph[1]='👹'
-
-elif [[ $GLYPH -eq 6 ]]; then
-    anim_glyph[0]='🚂'
-    anim_glyph[1]='🚒'
-
-elif [[ $GLYPH -eq 7 ]]; then
-    anim_glyph[0]='████'
-    anim_glyph[1]='▀▀▀▀'
-
-elif [[ $GLYPH -eq 8 ]]; then
-    anim_glyph[0]="●"
-    anim_glyph[1]="○"
-
-fi
-
 
 
 # This is "blank" part of the track; but it doesn't
@@ -170,13 +150,13 @@ fi
 declare anim_track_spacer_glyph=" "
 
 # spinner glyphs to randomly display:
-declare -a spinner_glyph_arr=(⡮ ⡯ ⡰ ⡱ ⡲ ⡳ ⡴ ⡵ ⡶ ⡷ ⡸ ⡹ ⡺ ⡻ ⡼ ⡽ ⡾ ⡿ ⢀ \
-    ⢁ ⢂ ⢃ ⢄ ⢅ ⢆ ⢇ ⢈ ⢉ ⢊ ⢋ ⢌ ⢍ ⢎ ⢏ ⢐ ⢑ ⢒ ⢓ ⢔ ⢕ ⢖ ⢗ ⢘ ⢙ \
-    ⢚ ⢛ ⢜ ⢝ ⢞ ⢟ ⢠ ⢡ ⢢ ⢣ ⢤ ⢥ ⢦ ⢧ ⢨ ⢩ ⢪ ⢫ ⢬ ⢭ ⢮ ⢯ ⢰ ⢱ ⢲ \
-    ⢳ ⢴ ⢵ ⢶ ⢷ ⢸ ⢹ ⢺ ⢻ ⢼ ⢽ ⢾ ⢿ ⣀ ⣁ ⣂ ⣃ ⣄ ⣅ ⣆ ⣇ ⣈ ⣉ ⣊ ⣋ \
-    ⣌ ⣍ ⣎ ⣏ ⣐ ⣑ ⣒ ⣓ ⣔ ⣕ ⣖ ⣗ ⣘ ⣙ ⣚ ⣛ ⣜ ⣝ ⣞ ⣟ ⣠ ⣡ ⣢ ⣣ ⣤ \
-    ⣥ ⣦ ⣧ ⣨ ⣩ ⣪ ⣫ ⣬ ⣭ ⣮ ⣯ ⣰ ⣱ ⣲ ⣳ ⣴ ⣵ ⣶ ⣷ ⣸ ⣹ ⣺ ⣻ ⣼ ⣽ \
-    ⣾ ⣿)
+declare -a spinner_glyph_arr=(⡮ ⡯ ⡰ ⡱ ⡲ ⡳ ⡴ ⡵ ⡶ ⡷ ⡸ ⡹ ⡺ ⡻ ⡼ ⡽ ⡾ ⡿
+    ⢁ ⢂ ⢃ ⢄ ⢅ ⢆ ⢇ ⢈ ⢉ ⢊ ⢋ ⢌ ⢍ ⢎ ⢏ ⢐ ⢑ ⢒ ⢓ ⢔ ⢕ ⢖ ⢗ ⢘ ⢙
+    ⢚ ⢛ ⢜ ⢝ ⢞ ⢟ ⢠ ⢡ ⢢ ⢣ ⢤ ⢥ ⢦ ⢧ ⢨ ⢩ ⢪ ⢫ ⢬ ⢭ ⢮ ⢯ ⢰ ⢱ ⢲
+    ⢳ ⢴ ⢵ ⢶ ⢷ ⢸ ⢹ ⢺ ⢻ ⢼ ⢽ ⢾ ⢿ ⣀ ⣁ ⣂ ⣃ ⣄ ⣅ ⣆ ⣇ ⣈ ⣉ ⣊ ⣋
+    ⣌ ⣍ ⣎ ⣏ ⣐ ⣑ ⣒ ⣓ ⣔ ⣕ ⣖ ⣗ ⣘ ⣙ ⣚ ⣛ ⣜ ⣝ ⣞ ⣟ ⣠ ⣡ ⣢ ⣣ ⣤
+    ⣥ ⣦ ⣧ ⣨ ⣩ ⣪ ⣫ ⣬ ⣭ ⣮ ⣯ ⣰ ⣱ ⣲ ⣳ ⣴ ⣵ ⣶ ⣷ ⣸ ⣹ ⣺ ⣻ ⣼ ⣽
+    ⣾ ⣿ ⢀)
 
 # Start off with this glyph
 declare spinner_glyph="${spinner_glyph_arr[0]}"
@@ -263,44 +243,60 @@ function check_flags() {
           g)
             GLYPH="${OPTARG}"
             if [[ $GLYPH -eq 0 ]]; then
-                anim_glyph[0]="▦▦"
-                anim_glyph[1]="▤▤"
+                anim_glyph[0]=${anim_glyph_arr_0[0]}
+                anim_glyph[1]=${anim_glyph_arr_1[0]}
+                # anim_glyph[0]="▦▦"
+                # anim_glyph[1]="▤▤"
 
             elif [[ $GLYPH -eq 1 ]]; then
-                anim_glyph[0]="[--]"
-                anim_glyph[1]="<o=o>"
+                anim_glyph[0]=${anim_glyph_arr_0[1]}
+                anim_glyph[1]=${anim_glyph_arr_1[1]}
+                # anim_glyph[0]="[--]"
+                # anim_glyph[1]="<o=o>"
 
             elif [[ $GLYPH -eq 2 ]]; then
-                anim_glyph[0]="[=]"
-                anim_glyph[1]="|o|"
+              anim_glyph[0]=${anim_glyph_arr_0[2]}
+              anim_glyph[1]=${anim_glyph_arr_1[2]}
+              # anim_glyph[0]="[=]"
+              # anim_glyph[1]="|o|"
 
             elif [[ $GLYPH -eq 3 ]]; then
-                anim_glyph[0]=".o=o."
-                anim_glyph[1]=".:o:."
+                anim_glyph[0]=${anim_glyph_arr_0[3]}
+                anim_glyph[1]=${anim_glyph_arr_1[3]}
+                # anim_glyph[0]=".o=o."
+                # anim_glyph[1]=".:o:."
 
             elif [[ $GLYPH -eq 4 ]]; then
-                anim_glyph[0]="▪-▪"
-                anim_glyph[1]="▫-▫"
+                anim_glyph[0]=${anim_glyph_arr_0[4]}
+                anim_glyph[1]=${anim_glyph_arr_1[4]}
+                # anim_glyph[0]="▪-▪"
+                # anim_glyph[1]="▫-▫"
 
             elif [[ $GLYPH -eq 5 ]]; then
-                anim_glyph[0]='👾'
-                anim_glyph[1]='👹'
+                anim_glyph[0]=${anim_glyph_arr_0[5]}
+                anim_glyph[1]=${anim_glyph_arr_1[5]}
+                # anim_glyph[0]='👾'
+                # anim_glyph[1]='👹'
 
             elif [[ $GLYPH -eq 6 ]]; then
-                anim_glyph[0]='🚂'
-                anim_glyph[1]='🚒'
+                anim_glyph[0]=${anim_glyph_arr_0[6]}
+                anim_glyph[1]=${anim_glyph_arr_1[6]}
+                # anim_glyph[0]='🚂'
+                # anim_glyph[1]='🚒'
 
             elif [[ $GLYPH -eq 7 ]]; then
-                anim_glyph[0]='████'
-                anim_glyph[1]='▀▀▀▀'
+                anim_glyph[0]=${anim_glyph_arr_0[7]}
+                anim_glyph[1]=${anim_glyph_arr_1[7]}
+                # anim_glyph[0]='████'
+                # anim_glyph[1]='▀▀▀▀'
 
             elif [[ $GLYPH -eq 8 ]]; then
-                anim_glyph[0]="●"
-                anim_glyph[1]="○"
+                anim_glyph[0]=${anim_glyph_arr_0[8]}
+                anim_glyph[1]=${anim_glyph_arr_1[8]}
+                # anim_glyph[0]="●"
+                # anim_glyph[1]="○"
 
             fi
-
-            # If none of above, then use default;
 
             ;;
           *)                        # If unknown (any other) option:
@@ -314,12 +310,12 @@ function check_flags() {
     if [[ "${anim_glyph[0]}" == "" ]]; then
 
         local GLYPH_RAND=0
-        local N=9
-        (( N-- ))
+        local N=${#anim_glyph_arr_0[@]}
+        # (( N-- ))
 
         # Random from 0 to N -1
         GLYPH_RAND=$(( $RANDOM % N ))
-        echo $GLYPH_RAND
+        # echo $GLYPH_RAND
         # exit
 
         # @ = $GLYPH_RAND
