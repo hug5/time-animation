@@ -32,21 +32,22 @@ DESCRIPTION
     Animated CLI Clock
 
 USAGE
-    $ ./time-animation.sh [-g 1-5] [-o HOUR)] [-m MINUTE] [-h HELP]
+    $ ./time-animation.sh [-g 0-N] [-o HOUR)] [-m MINUTE] [-h HELP]
 
 EXAMPLE
     $ ./time-animation.sh
-      # Default
-    $ ./time-animation.sh -o 👾 -m 👹
+      # Randomly selects one of built in glyphs
+    $ ./time-animation.sh -o '[--]' -m '<o0o>'
       # Customize hour and minute glyphs
     $ ./time-animation.sh -g1
-      # Use one of the pre-built optional glyphs; 1-5;
-      
+      # Use one of the pre-built optional glyphs; 0 to N;
+
 FLAGS
     -o HOUR glyph      Characters to represent hour.
     -m MINUTE glyph    Characters to represent minute.
-    -g Pre-built       1-5; Use one of the prebuilt glyphs.
+    -g Pre-built       0-N; Use one of the prebuilt glyphs.
     -h                 This help.
+EOF
 
 ```          
 

@@ -1,6 +1,6 @@
 #!/bin/bash
 set -ue
-  # -u unset/null variables as error
+  # -u : unset/null variables as error
   # -e : Exit on error
 
 
@@ -8,6 +8,8 @@ set -ue
 #
 # Date     : // 2023-12-30;
 #          : // 2024-09-16
+#          : // 2025-08-24 Sun 16:31
+#
 # File     : time-an.sh or time-animation; put symlink in bin folder;
 # Location : /shell-scripts/time-animation
 # Website  : xxxxx
@@ -120,6 +122,7 @@ declare -a anim_direction[1]=1
 declare -a anim_glyph[0]=""
 declare -a anim_glyph[1]=""
 
+# These are our built-in available glyphs;
 declare -a anim_glyph_arr_0=(
     "▦▦"
     "[--]"
@@ -151,12 +154,12 @@ declare anim_track_spacer_glyph=" "
 
 # spinner glyphs to randomly display:
 declare -a spinner_glyph_arr=(⡮ ⡯ ⡰ ⡱ ⡲ ⡳ ⡴ ⡵ ⡶ ⡷ ⡸ ⡹ ⡺ ⡻ ⡼ ⡽ ⡾ ⡿
-    ⢁ ⢂ ⢃ ⢄ ⢅ ⢆ ⢇ ⢈ ⢉ ⢊ ⢋ ⢌ ⢍ ⢎ ⢏ ⢐ ⢑ ⢒ ⢓ ⢔ ⢕ ⢖ ⢗ ⢘ ⢙
+    ⢁ ⢂ ⢀ ⢃ ⢄ ⢅ ⢆ ⢇ ⢈ ⢉ ⢊ ⢋ ⢌ ⢍ ⢎ ⢏ ⢐ ⢑ ⢒ ⢓ ⢔ ⢕ ⢖ ⢗ ⢘ ⢙
     ⢚ ⢛ ⢜ ⢝ ⢞ ⢟ ⢠ ⢡ ⢢ ⢣ ⢤ ⢥ ⢦ ⢧ ⢨ ⢩ ⢪ ⢫ ⢬ ⢭ ⢮ ⢯ ⢰ ⢱ ⢲
     ⢳ ⢴ ⢵ ⢶ ⢷ ⢸ ⢹ ⢺ ⢻ ⢼ ⢽ ⢾ ⢿ ⣀ ⣁ ⣂ ⣃ ⣄ ⣅ ⣆ ⣇ ⣈ ⣉ ⣊ ⣋
     ⣌ ⣍ ⣎ ⣏ ⣐ ⣑ ⣒ ⣓ ⣔ ⣕ ⣖ ⣗ ⣘ ⣙ ⣚ ⣛ ⣜ ⣝ ⣞ ⣟ ⣠ ⣡ ⣢ ⣣ ⣤
     ⣥ ⣦ ⣧ ⣨ ⣩ ⣪ ⣫ ⣬ ⣭ ⣮ ⣯ ⣰ ⣱ ⣲ ⣳ ⣴ ⣵ ⣶ ⣷ ⣸ ⣹ ⣺ ⣻ ⣼ ⣽
-    ⣾ ⣿ ⢀)
+    ⣾ ⣿)
 
 # Start off with this glyph
 declare spinner_glyph="${spinner_glyph_arr[0]}"
@@ -183,20 +186,20 @@ function show_usage() {
 cat << EOF
 
 USAGE
-    $ ./time-animation.sh [-g 1-5] [-o HOUR)] [-m MINUTE] [-h HELP]
+    $ ./time-animation.sh [-g 0-N] [-o HOUR)] [-m MINUTE] [-h HELP]
 
 EXAMPLE
     $ ./time-animation.sh
-      # Default
+      # Randomly selects one of built in glyphs
     $ ./time-animation.sh -o '[--]' -m '<o0o>'
       # Customize hour and minute glyphs
     $ ./time-animation.sh -g1
-      # Use one of the pre-built optional glyphs; 1-N;
+      # Use one of the pre-built optional glyphs; 0 to N;
 
 FLAGS
     -o HOUR glyph      Characters to represent hour.
     -m MINUTE glyph    Characters to represent minute.
-    -g Pre-built       1-N; Use one of the prebuilt glyphs.
+    -g Pre-built       0-N; Use one of the prebuilt glyphs.
     -h                 This help.
 EOF
 
@@ -245,57 +248,31 @@ function check_flags() {
             if [[ $GLYPH -eq 0 ]]; then
                 anim_glyph[0]=${anim_glyph_arr_0[0]}
                 anim_glyph[1]=${anim_glyph_arr_1[0]}
-                # anim_glyph[0]="▦▦"
-                # anim_glyph[1]="▤▤"
-
             elif [[ $GLYPH -eq 1 ]]; then
                 anim_glyph[0]=${anim_glyph_arr_0[1]}
                 anim_glyph[1]=${anim_glyph_arr_1[1]}
-                # anim_glyph[0]="[--]"
-                # anim_glyph[1]="<o=o>"
-
             elif [[ $GLYPH -eq 2 ]]; then
               anim_glyph[0]=${anim_glyph_arr_0[2]}
               anim_glyph[1]=${anim_glyph_arr_1[2]}
-              # anim_glyph[0]="[=]"
-              # anim_glyph[1]="|o|"
-
             elif [[ $GLYPH -eq 3 ]]; then
                 anim_glyph[0]=${anim_glyph_arr_0[3]}
                 anim_glyph[1]=${anim_glyph_arr_1[3]}
-                # anim_glyph[0]=".o=o."
-                # anim_glyph[1]=".:o:."
-
             elif [[ $GLYPH -eq 4 ]]; then
                 anim_glyph[0]=${anim_glyph_arr_0[4]}
                 anim_glyph[1]=${anim_glyph_arr_1[4]}
-                # anim_glyph[0]="▪-▪"
-                # anim_glyph[1]="▫-▫"
-
             elif [[ $GLYPH -eq 5 ]]; then
                 anim_glyph[0]=${anim_glyph_arr_0[5]}
                 anim_glyph[1]=${anim_glyph_arr_1[5]}
-                # anim_glyph[0]='👾'
-                # anim_glyph[1]='👹'
-
             elif [[ $GLYPH -eq 6 ]]; then
                 anim_glyph[0]=${anim_glyph_arr_0[6]}
                 anim_glyph[1]=${anim_glyph_arr_1[6]}
-                # anim_glyph[0]='🚂'
-                # anim_glyph[1]='🚒'
-
             elif [[ $GLYPH -eq 7 ]]; then
                 anim_glyph[0]=${anim_glyph_arr_0[7]}
                 anim_glyph[1]=${anim_glyph_arr_1[7]}
-                # anim_glyph[0]='████'
-                # anim_glyph[1]='▀▀▀▀'
 
             elif [[ $GLYPH -eq 8 ]]; then
                 anim_glyph[0]=${anim_glyph_arr_0[8]}
                 anim_glyph[1]=${anim_glyph_arr_1[8]}
-                # anim_glyph[0]="●"
-                # anim_glyph[1]="○"
-
             fi
 
             ;;
@@ -307,6 +284,9 @@ function check_flags() {
     done
 
 
+    # I should ideally put this in its own function, but I'll leave
+    # here in order to demonstrate the use of set --
+    # If I put in own function, then wouldn't need that;
     if [[ "${anim_glyph[0]}" == "" ]]; then
 
         local GLYPH_RAND=0
@@ -314,13 +294,17 @@ function check_flags() {
         # (( N-- ))
 
         # Random from 0 to N -1
-        GLYPH_RAND=$(( $RANDOM % N ))
+        GLYPH_RAND=$(( RANDOM % N ))
         # echo $GLYPH_RAND
         # exit
 
         # @ = $GLYPH_RAND
 
         set -- -g${GLYPH_RAND}
+        # Here, trying to manually set "$@" variable;
+        # set: bash built-in command for setting shell's environment and options
+        # With -- : means stop parsing options, everything after this is positional parameters.; s after --, this is our manually set positional paramter;
+        # ie, -g flag + the glyph
 
         check_flags "$@"
         # check_flags "$GLYPH_RAND"
